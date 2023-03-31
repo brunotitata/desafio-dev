@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver: org.postgresql.Driver
+    password: transaction_service
+    url: jdbc:postgresql://localhost:5432/transaction_service
+    username: transaction_service
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: false
+    show-sql: false

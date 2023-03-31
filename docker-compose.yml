@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+
+  db-service:
+    container_name: postgres
+    image: postgres:10.19
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: transaction_service
+      POSTGRES_PASSWORD: transaction_service
+      POSTGRES_DB: transaction_service
+    volumes:
+      - ./.volumes/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U transaction_service"]
+      interval: 2s
+      timeout: 3s
+      retries: 30

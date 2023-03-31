@@ -1,0 +1,14 @@
+<beanio xmlns="http://www.beanio.org/2012/03">
+    <stream name="transactions" format="fixedlength">
+        <record name="transaction" class="br.com.bycoders.domain.TransactionDTO" minOccurs="0" maxOccurs="unbounded">
+            <field name="transactionType" position="0" length="1"/>
+            <field name="date" position="1" length="8" format="yyyyMMdd"/>
+            <field name="amount" position="9" length="10"/>
+            <field name="taxId" position="19" length="11"/>
+            <field name="card" position="30" length="12"/>
+            <field name="hours" position="42" length="6" format="HHmmss"/>
+            <field name="ownerName" position="48" length="14"/>
+            <field name="merchantName" position="62" length="18"/>
+        </record>
+    </stream>
+</beanio>
