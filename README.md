@@ -1,4 +1,4 @@
-# Execução
+# Execução do Projeto
     Na pasta do projeto, execute seguintes comandos:
 
     - docker-compose up -d
