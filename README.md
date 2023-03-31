@@ -1,3 +1,9 @@
+# Execução
+    Na pasta do projeto, execute seguintes comandos:
+
+    - docker-compose up -d
+    - ./gradlew bootRun
+
 # Desafio programação - para vaga desenvolvedor
 
 Por favor leiam este documento do começo ao fim, com muita atenção.

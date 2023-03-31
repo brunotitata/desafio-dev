@@ -4,6 +4,8 @@ import br.com.bycoders.domain.DocumentTransaction;
 import br.com.bycoders.domain.Transaction;
 import br.com.bycoders.domain.TransactionRepository;
 import br.com.bycoders.port.adapters.controller.DTO.MerchantResponseDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -13,6 +15,9 @@ import java.util.Set;
 
 @Component
 public class TransactionApplicationService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TransactionApplicationService.class);
+
 
     private final CnabApplicationService cnabApplicationService;
     private final TransactionRepository transactionRepository;
@@ -27,7 +32,11 @@ public class TransactionApplicationService {
         cnabApplicationService.extractTransactionsToFile(cnabFile)
                 .stream()
                 .map(Transaction::createNewTransaction)
-                .forEach(transactionRepository::save);
+                .forEach(transaction -> transactionRepository.findByDateAndAmountAndTaxId(transaction.getDate(), transaction.getAmount(), transaction.getTaxId())
+                        .ifPresentOrElse(
+                                (value) -> LOG.info("Transação já existente" + value),
+                                () -> transactionRepository.save(transaction)
+                        ));
 
     }
 

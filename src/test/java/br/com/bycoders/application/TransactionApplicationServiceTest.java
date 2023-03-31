@@ -7,16 +7,19 @@ import br.com.bycoders.port.adapters.controller.DTO.MerchantResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class TransactionApplicationServiceTest {
 
@@ -46,6 +49,35 @@ public class TransactionApplicationServiceTest {
         transactionApplicationService.saveTransaction(new byte[0]);
 
         verify(transactionRepository).save(any());
+
+    }
+
+    @Test
+    public void mustNotSaveDuplicateTransactions() throws IOException {
+
+        Transaction transaction = mock(Transaction.class);
+
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setTransactionType(1);
+        transactionDTO.setDate(new Date());
+        transactionDTO.setAmount("1550.00");
+        transactionDTO.setTaxId("72998832016");
+        transactionDTO.setCard("8473****1231");
+        transactionDTO.setHours(new Date());
+        transactionDTO.setOwnerName("JOSÉ COSTA");
+        transactionDTO.setMerchantName("MERCEARIA 3 IRMÃOS");
+
+        byte[] cnab = this.getClass().getResourceAsStream("/file/CNAB.txt").readAllBytes();
+
+        given(transactionRepository.findByDateAndAmountAndTaxId(any(), any(), any()))
+                .willReturn(Optional.ofNullable(transaction));
+
+        given(cnabApplicationService.extractTransactionsToFile(any()))
+                .willReturn(List.of(transactionDTO));
+
+        transactionApplicationService.saveTransaction(cnab);
+
+        verify(transactionRepository, times(0)).save(any());
 
     }
 
