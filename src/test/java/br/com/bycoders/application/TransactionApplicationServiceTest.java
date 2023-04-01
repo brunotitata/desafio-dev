@@ -131,6 +131,89 @@ public class TransactionApplicationServiceTest {
 
     }
 
+    @Test
+    public void mustSearchAllMerchants() {
+
+        given(transactionRepository.findAll())
+                .willReturn(List.of(
+                        new Transaction(
+                                1,
+                                LocalDateTime.of(2023, 1, 1, 0, 0, 0),
+                                BigDecimal.valueOf(0012550),
+                                "72998832016",
+                                "8473****1231",
+                                "JOSÉ COSTA",
+                                "MERCEARIA 3 IRMÃOS"
+                        ),
+                        new Transaction(
+                                2,
+                                LocalDateTime.of(2023, 1, 1, 0, 0, 0),
+                                BigDecimal.valueOf(0002550),
+                                "72998832016",
+                                "8473****1231",
+                                "JOSÉ COSTA",
+                                "MERCEARIA 3 IRMÃOS"
+                        ),
+                        new Transaction(
+                                3,
+                                LocalDateTime.of(2023, 1, 1, 0, 0, 0),
+                                BigDecimal.valueOf(1550.00),
+                                "55641815063",
+                                "8473****1231",
+                                "MARIA JOSEFINA",
+                                "LOJA DO Ó - MATRIZ"
+                        ),
+                        new Transaction(
+                                4,
+                                LocalDateTime.of(2023, 1, 1, 0, 0, 0),
+                                BigDecimal.valueOf(0550.00),
+                                "55641815063",
+                                "8473****1231",
+                                "MARIA JOSEFINA",
+                                "LOJA DO Ó - MATRIZ"
+                        )
+                ));
+
+        List<MerchantResponseDTO> merchantResponseDTO = transactionApplicationService.allMerchants();
+
+        verify(transactionRepository).findAll();
+
+        assertEquals(BigDecimal.valueOf(-10.0), merchantResponseDTO.get(0).getTotalAmount());
+        assertEquals("LOJA DO Ó - MATRIZ", merchantResponseDTO.get(0).getTransactions().get(0).getMerchantName());
+        assertEquals("55641815063", merchantResponseDTO.get(0).getTransactions().get(0).getTaxId());
+        assertEquals("8473****1231", merchantResponseDTO.get(0).getTransactions().get(0).getCard());
+        assertEquals("MARIA JOSEFINA", merchantResponseDTO.get(0).getTransactions().get(0).getOwnerName());
+        assertEquals(3, merchantResponseDTO.get(0).getTransactions().get(0).getTransactionType());
+        assertEquals("2023-01-01T00:00", merchantResponseDTO.get(0).getTransactions().get(0).getDate().toString());
+        assertEquals(BigDecimal.valueOf(15.50), merchantResponseDTO.get(0).getTransactions().get(0).getAmount());
+
+        assertEquals("55641815063", merchantResponseDTO.get(0).getTransactions().get(1).getTaxId());
+        assertEquals("8473****1231", merchantResponseDTO.get(0).getTransactions().get(1).getCard());
+        assertEquals("MARIA JOSEFINA", merchantResponseDTO.get(0).getTransactions().get(1).getOwnerName());
+        assertEquals("LOJA DO Ó - MATRIZ", merchantResponseDTO.get(0).getTransactions().get(1).getMerchantName());
+        assertEquals(4, merchantResponseDTO.get(0).getTransactions().get(1).getTransactionType());
+        assertEquals("2023-01-01T00:00", merchantResponseDTO.get(0).getTransactions().get(1).getDate().toString());
+        assertEquals(BigDecimal.valueOf(5.50), merchantResponseDTO.get(0).getTransactions().get(1).getAmount());
+
+        assertEquals(BigDecimal.valueOf(40.96), merchantResponseDTO.get(1).getTotalAmount());
+        assertEquals("MERCEARIA 3 IRMÃOS", merchantResponseDTO.get(1).getTransactions().get(0).getMerchantName());
+        assertEquals("72998832016", merchantResponseDTO.get(1).getTransactions().get(0).getTaxId());
+        assertEquals("8473****1231", merchantResponseDTO.get(1).getTransactions().get(0).getCard());
+        assertEquals("JOSÉ COSTA", merchantResponseDTO.get(1).getTransactions().get(0).getOwnerName());
+        assertEquals(1, merchantResponseDTO.get(1).getTransactions().get(0).getTransactionType());
+        assertEquals("2023-01-01T00:00", merchantResponseDTO.get(1).getTransactions().get(0).getDate().toString());
+        assertEquals(BigDecimal.valueOf(54.80), merchantResponseDTO.get(1).getTransactions().get(0).getAmount());
+
+        assertEquals("72998832016", merchantResponseDTO.get(1).getTransactions().get(1).getTaxId());
+        assertEquals("8473****1231", merchantResponseDTO.get(1).getTransactions().get(1).getCard());
+        assertEquals("JOSÉ COSTA", merchantResponseDTO.get(1).getTransactions().get(1).getOwnerName());
+        assertEquals("MERCEARIA 3 IRMÃOS", merchantResponseDTO.get(1).getTransactions().get(1).getMerchantName());
+        assertEquals(2, merchantResponseDTO.get(1).getTransactions().get(1).getTransactionType());
+        assertEquals("2023-01-01T00:00", merchantResponseDTO.get(1).getTransactions().get(1).getDate().toString());
+        assertEquals(BigDecimal.valueOf(13.84), merchantResponseDTO.get(1).getTransactions().get(1).getAmount());
+
+    }
+
     private static Date toDate(Instant instant) {
         BigInteger milis = BigInteger.valueOf(instant.getEpochSecond()).multiply(
                 BigInteger.valueOf(1000));

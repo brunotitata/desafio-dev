@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class TransactionApplicationService {
@@ -44,6 +45,30 @@ public class TransactionApplicationService {
 
         List<Transaction> transactions = transactionRepository.findByTaxId(taxId);
 
+        BigDecimal positiveValues = calculateSumAmount(transactions);
+        BigDecimal negativeValues = calculateDebitAmount(transactions);
+
+        BigDecimal totalValue = positiveValues.subtract(negativeValues);
+
+        return Transaction.createResponse(totalValue, transactions);
+
+    }
+
+    private BigDecimal calculateDebitAmount(List<Transaction> transactions) {
+
+        Set<DocumentTransaction> naturezaDebit = EnumSet.of(
+                DocumentTransaction.BOLETO,
+                DocumentTransaction.FINANCIAMENTO,
+                DocumentTransaction.ALUGUEL
+        );
+        return transactions.stream()
+                .filter(transaction -> naturezaDebit.contains(DocumentTransaction.of(transaction.getTransactionType())))
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private BigDecimal calculateSumAmount(List<Transaction> transactions) {
+
         Set<DocumentTransaction> naturezaSum = EnumSet.of(
                 DocumentTransaction.DEBITO,
                 DocumentTransaction.CREDITO,
@@ -53,27 +78,24 @@ public class TransactionApplicationService {
                 DocumentTransaction.RECEBIMENTO_DOC
         );
 
-        Set<DocumentTransaction> naturezaDebit = EnumSet.of(
-                DocumentTransaction.BOLETO,
-                DocumentTransaction.FINANCIAMENTO,
-                DocumentTransaction.ALUGUEL
-        );
-
-        BigDecimal sum = transactions.stream()
+        return transactions.stream()
                 .filter(transaction -> naturezaSum.contains(DocumentTransaction.of(transaction.getTransactionType())))
                 .map(Transaction::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal debit = transactions.stream()
-                .filter(transaction -> naturezaDebit.contains(DocumentTransaction.of(transaction.getTransactionType())))
-                .map(Transaction::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal totalValue = sum.subtract(debit);
-
-        return Transaction.createResponse(totalValue, transactions);
-
     }
 
+    public List<MerchantResponseDTO> allMerchants() {
+        return transactionRepository.findAll()
+                .stream()
+                .collect(Collectors.groupingBy(Transaction::getTaxId))
+                .entrySet()
+                .stream()
+                .map(key -> {
+                    BigDecimal positiveValues = calculateSumAmount(key.getValue());
+                    BigDecimal negativeValues = calculateDebitAmount(key.getValue());
+                    BigDecimal totalValue = positiveValues.subtract(negativeValues);
+                    return Transaction.createResponse(totalValue, key.getValue());
+                }).collect(Collectors.toList());
+    }
 
 }

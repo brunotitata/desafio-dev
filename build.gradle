@@ -23,6 +23,8 @@ dependencies {
 
     implementation group: 'org.beanio', name: 'beanio', version: '2.1.0'
 
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.15'
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

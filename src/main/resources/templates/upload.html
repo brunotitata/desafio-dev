@@ -62,7 +62,7 @@
 <div class="container">
     <h1>Upload de Arquivo</h1>
     <form action="#" method="post" enctype="multipart/form-data" th:action="@{/upload-file}" th:object="${uploadForm}">
-        <label for="fileInput">Selecione um arquivo para upload:</label>
+        <label for="fileInput">Selecione um arquivo CNAB para upload:</label>
         <input type="file" id="fileInput" name="file" th:required="required">
         <button class="button" type="submit">Enviar</button>
     </form>

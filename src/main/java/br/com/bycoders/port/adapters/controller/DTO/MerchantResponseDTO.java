@@ -18,16 +18,8 @@ public class MerchantResponseDTO {
         return totalAmount;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
     public List<TransactionMerchantDTO> getTransactions() {
         return transactions;
-    }
-
-    public void setTransactions(List<TransactionMerchantDTO> transactions) {
-        this.transactions = transactions;
     }
 
     @Override

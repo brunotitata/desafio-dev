@@ -12,4 +12,6 @@ public interface TransactionRepository {
     List<Transaction> findByTaxId(String taxId);
 
     Optional<Transaction> findByDateAndAmountAndTaxId(LocalDateTime date, BigDecimal amount, String taxId);
+
+    List<Transaction> findAll();
 }

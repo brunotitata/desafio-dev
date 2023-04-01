@@ -33,4 +33,9 @@ public class TransactionRepositoryJpa implements TransactionRepository {
     public Optional<Transaction> findByDateAndAmountAndTaxId(LocalDateTime date, BigDecimal amount, String taxId) {
         return transactionRepositorySpringData.findByDateAndAmountAndTaxId(date, amount, taxId);
     }
+
+    @Override
+    public List<Transaction> findAll() {
+        return transactionRepositorySpringData.findAll();
+    }
 }

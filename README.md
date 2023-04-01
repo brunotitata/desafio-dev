@@ -4,6 +4,18 @@
     - docker-compose up -d
     - ./gradlew bootRun
 
+# Swagger
+
+    Link: http://localhost:8080/swagger-ui.html
+
+# Rotas
+
+    Realizar upload CNAB - POST: http://localhost:8080/upload
+    Listar estabelecimento especifico - GET: http://localhost:8080/merchant?taxId={CPF}
+    Listar todos estabelecimentos - GET: http://localhost:8080/merchants
+
+---------------------------------------------------------------------------
+
 # Desafio programação - para vaga desenvolvedor
 
 Por favor leiam este documento do começo ao fim, com muita atenção.
