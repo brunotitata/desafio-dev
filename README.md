@@ -4,6 +4,8 @@
     - docker-compose up -d
     - ./gradlew bootRun
 
+    - Acesse: http://localhost:8080/upload para realizar upload do arquivo CNAB
+
 # Swagger
 
     Link: http://localhost:8080/swagger-ui.html
